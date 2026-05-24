@@ -122,6 +122,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   position: relative;
 }
 .marquee-track {
+  image-rendering: optimizeSpeed;
   display: flex;
   width: max-content;
   will-change: transform;
@@ -129,6 +130,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   backface-visibility: hidden;
   contain: layout paint;
 }
+
+/* Performance additions: no visual effects removed. */
+.interactive-wave-bg { contain: strict; }
 
 .loop-step {
   display: flex;

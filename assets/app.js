@@ -21,15 +21,17 @@
     const canvas = $(".interactive-wave-bg");
     const gridOverlay = $(".vertical-grid-overlay");
     if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
+    const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true, willReadFrequently: false });
     let width = 0;
     let height = 0;
     let time = 0;
     let lastFrame = 0;
-    const targetFrameMs = 1000 / 45;
+    const targetFrameMs = 1000 / 60;
     const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const targetMouse = { x: mouse.x, y: mouse.y };
     const colors = ["#A0A0FF", "#FFB0FF", "#B0FFFF"];
+    let cachedGradient = null;
+    let gridFrame = 0;
 
     function resize() {
       const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
@@ -40,6 +42,7 @@
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       width = window.innerWidth;
       height = window.innerHeight;
+      cachedGradient = null;
     }
 
     window.addEventListener("resize", resize);
@@ -59,28 +62,33 @@
         return;
       }
       lastFrame = now;
-      mouse.x += (targetMouse.x - mouse.x) * 0.12;
-      mouse.y += (targetMouse.y - mouse.y) * 0.12;
+      mouse.x += (targetMouse.x - mouse.x) * 0.08;
+      mouse.y += (targetMouse.y - mouse.y) * 0.08;
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, width, height);
-      time += prefersReducedMotion ? 0 : 0.0025;
+      time += prefersReducedMotion ? 0 : 0.002;
 
-      if (gridOverlay) {
-        const offset = (time * 7.5) % 80;
+      gridFrame += 1;
+      if (gridOverlay && gridFrame % 3 === 0) {
+        const offset = (time * 6) % 80;
         gridOverlay.style.backgroundPosition = `${offset}px ${offset}px`;
       }
 
       const lines = window.innerWidth < 768 ? 7 : 9;
       const points = window.innerWidth < 768 ? 22 : 30;
 
+      if (!cachedGradient) {
+        cachedGradient = ctx.createLinearGradient(0, 0, width, 0);
+        cachedGradient.addColorStop(0, colors[0]);
+        cachedGradient.addColorStop(0.5, colors[1]);
+        cachedGradient.addColorStop(1, colors[2]);
+      }
+
+      ctx.lineWidth = 1.1;
+      ctx.strokeStyle = cachedGradient;
+
       for (let i = 0; i < lines; i += 1) {
         ctx.beginPath();
-        ctx.lineWidth = 1.1;
-        const gradient = ctx.createLinearGradient(0, 0, width, 0);
-        gradient.addColorStop(0, colors[0]);
-        gradient.addColorStop(0.5, colors[1]);
-        gradient.addColorStop(1, colors[2]);
-        ctx.strokeStyle = gradient;
         ctx.globalAlpha = 0.13 + (i / lines) * 0.09;
 
         for (let j = 0; j <= points; j += 1) {
@@ -170,10 +178,10 @@
     measureCycle();
 
     function animate() {
-      current += (target - current) * 0.09;
-      drift = prefersReducedMotion ? 0 : drift + 0.32;
+      current += (target - current) * 0.14;
+      drift = prefersReducedMotion ? 0 : drift + 0.4;
       const offset = cycle ? (current + drift) % cycle : current + drift;
-      marqueeTrack.style.transform = `translate3d(-${offset}px, 0, 0)`;
+      marqueeTrack.style.transform = `translate3d(-${Math.round(offset)}px, 0, 0)`;
       window.requestAnimationFrame(animate);
     }
 
