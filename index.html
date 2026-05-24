@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>ScholarSync | The AI Backend for Modern Students</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "iridescent-end": "#B0FFFF",
+            "inverse-on-surface": "#303030",
+            "inverse-surface": "#e2e2e2",
+            "on-primary-fixed-variant": "#474747",
+            "on-background": "#ffffff",
+            "surface-container-low": "#1b1b1b",
+            "on-primary-container": "#e0e0e0",
+            "inverse-primary": "#5e5e5e",
+            "on-tertiary-fixed-variant": "#930100",
+            "on-surface": "#ffffff",
+            "primary-container": "#000000",
+            "surface-variant": "#353535",
+            "on-secondary": "#2f3131",
+            "iridescent-start": "#A0A0FF",
+            "tertiary-fixed": "#ffdad4",
+            "surface": "transparent",
+            "outline": "#988e90",
+            "surface-bright": "#393939",
+            "iridescent-mid": "#FFB0FF",
+            "secondary": "#c6c6c7",
+            "on-primary": "#303030",
+            "surface-container-highest": "#353535",
+            "error-container": "#93000a",
+            "surface-container-high": "#2a2a2a",
+            "on-surface-variant": "#e0e0e0",
+            "surface-container-lowest": "#0a0a0a",
+            "surface-container": "#1f1f1f",
+            "surface-glass": "rgba(10, 10, 10, 0.4)",
+            "on-tertiary-container": "#ec0000",
+            "on-error-container": "#ffdad6",
+            "primary": "#ffffff",
+            "background": "transparent",
+            "border-subtle": "rgba(255,255,255,0.1)",
+            "error": "#ffb4ab",
+            "outline-variant": "rgba(255,255,255,0.1)"
+          },
+          borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          spacing: { unit: "4px", gutter: "24px", "margin-mobile": "16px", "container-max": "1440px", "margin-desktop": "64px" },
+          fontFamily: {
+            "code-sm": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "label-caps": ["Hanken Grotesk"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "status-dot": ["JetBrains Mono"],
+            "body-md": ["Hanken Grotesk"]
+          },
+          fontSize: {
+            "code-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+            "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "500" }],
+            "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "600" }],
+            "headline-xl": ["48px", { lineHeight: "56px", fontWeight: "700" }],
+            "headline-md": ["24px", { lineHeight: "32px", fontWeight: "500" }],
+            "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+            "status-dot": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }]
+          }
+        }
+      }
+    };
+  </script>
+  <link href="assets/styles.css" rel="stylesheet" />
+</head>
+<body class="font-body-md text-body-md selection:bg-iridescent-mid selection:text-surface">
+  <canvas aria-hidden="true" class="interactive-wave-bg"></canvas>
+  <div aria-hidden="true" class="vertical-grid-overlay"></div>
+  <div aria-hidden="true" class="overlay-vignette"></div>
+
+  <header class="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-xl border-b border-white/10">
+    <nav class="flex justify-between items-center h-16 px-gutter mx-auto max-w-6xl">
+      <a class="flex items-center gap-3" href="#home" aria-label="ScholarSync home">
+        <img alt="ScholarSync Logo" class="w-auto object-contain h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUV2EMmy8qoN_D7oUci2HrIeMPjnzQmBf6S-LCmywarwo0udDePhILf29yRcE65QGaaC6cZqmiS-V1Ax_sXnsqPCETeiQo1dJuWV3wE89frHgvqHzFmjiHpxR2gEQZBf_JzFOTI68HsCftP1Emab4k2J38jJSYlHY0UZiS3zDmjS4pQTJDShtB9hRrBD3x27tF_VxqLIDp0iTJljcUjOtq-IwBJiRlvZLrOSOdzRwszpDFEdeN1XDM1fPTy5__VXhPlVegocXhnw" />
+      </a>
+      <div class="hidden md:flex gap-8 items-center" data-nav>
+        <a class="nav-link" href="#home" data-section-link="home">Home</a>
+        <a class="nav-link" href="#how-it-works" data-section-link="how-it-works">How It Works</a>
+        <a class="nav-link" href="#tools" data-section-link="tools">Tools</a>
+        <a class="nav-link" href="#quickstart" data-section-link="quickstart">Quickstart</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="icon-button" type="button" data-open-terminal aria-label="Open terminal panel">
+          <span class="material-symbols-outlined">terminal</span>
+        </button>
+        <button class="bg-white text-black px-6 py-2 font-bold rounded hover:bg-black hover:text-white border border-white transition-all" type="button" data-open-deploy>Deploy</button>
+        <button class="md:hidden icon-button" type="button" data-toggle-mobile aria-expanded="false" aria-label="Open navigation">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </nav>
+    <div class="mobile-menu md:hidden hidden border-t border-white/10 bg-black/80 backdrop-blur-xl" data-mobile-menu>
+      <a href="#home" data-mobile-link>Home</a>
+      <a href="#how-it-works" data-mobile-link>How It Works</a>
+      <a href="#tools" data-mobile-link>Tools</a>
+      <a href="#quickstart" data-mobile-link>Quickstart</a>
+    </div>
+  </header>
+
+  <main class="relative pt-16 max-w-6xl mx-auto px-4 md:px-margin-desktop">
+    <section id="home" class="relative min-h-[80vh] flex flex-col items-center justify-center px-gutter text-center overflow-hidden py-12 scroll-mt-24" data-section>
+      <div class="z-10 max-w-4xl mx-auto space-y-8">
+        <button class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-outline-variant bg-surface-container-low/40 backdrop-blur-sm hover:border-white/30 transition-all" type="button" data-open-terminal>
+          <div class="status-dot-active"></div>
+          <span class="font-status-dot text-status-dot text-on-surface-variant">v0.4.2 ALPHA • MCP READY</span>
+        </button>
+        <h1 class="font-headline-xl text-headline-xl text-high-contrast leading-tight">
+          The AI Backend for <span class="text-transparent bg-clip-text bg-gradient-to-r from-iridescent-start to-iridescent-end">Modern Students</span>
+        </h1>
+        <p class="font-body-lg text-body-lg text-soft-contrast max-w-2xl mx-auto drop-shadow-md">
+          ScholarSync is a Python MCP server that gives Claude Desktop real academic tools — semantic search over your notes and PDFs, assignment tracking, timetable queries, and smart reminders. All backed by MongoDB. All running locally.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button class="bg-white text-black px-8 py-3 font-bold rounded-lg hover:bg-black hover:text-white border border-white transition-all flex items-center gap-2" type="button" data-scroll-target="how-it-works">
+            <span>Explore Architecture</span>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
+          <button class="border border-white text-white px-8 py-3 font-bold rounded-lg hover:bg-white hover:text-black transition-all flex items-center gap-2 dot-matrix bg-surface-container-low/20" type="button" data-toast="GitHub link ready to connect once your repository URL is final.">
+            <span class="material-symbols-outlined">code</span>
+            <span>View on GitHub</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="marquee-container py-12 z-0 my-8 opacity-90">
+        <div class="marquee-track items-center" id="scroll-marquee">
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-start opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-mid opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-end opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-start opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-mid opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-end opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-start opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-mid opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-end opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-start opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-mid opacity-50">•</span>
+          <span class="marquee-item marquee-font text-white opacity-90">SCHOLARSYNC</span>
+          <span class="marquee-item marquee-font text-iridescent-end opacity-50">•</span>
+        </div>
+      </div>
+
+      <div class="mt-4 z-10 w-full max-w-2xl mx-auto glass-panel rounded-xl overflow-hidden terminal-glow text-left font-code-sm text-code-sm border border-border-subtle shadow-2xl">
+        <div class="bg-surface-container-high/40 px-4 py-2 border-b border-border-subtle flex items-center gap-2">
+          <div class="flex gap-1.5">
+            <div class="w-3 h-3 rounded-full bg-error/30"></div>
+            <div class="w-3 h-3 rounded-full bg-secondary/30"></div>
+            <div class="w-3 h-3 rounded-full bg-primary/30"></div>
+          </div>
+          <span class="text-on-surface-variant/80 ml-2">scholarsync_server — zsh</span>
+        </div>
+        <div class="p-6 space-y-1 text-soft-contrast" data-terminal-lines>
+          <p class="text-iridescent-start"><span class="text-on-surface-variant opacity-70">$</span> scholarsync-mcp start</p>
+          <p class="opacity-90">ScholarSync MCP server starting...</p>
+          <p class="text-iridescent-end">MongoDB connected: <span class="underline">academic_assistant</span></p>
+          <p>Tools registered: <span class="text-primary font-bold">19</span></p>
+          <p>Transport: <span class="bg-surface-variant px-1 text-[11px] text-white">stdio</span> | <span class="bg-surface-variant px-1 text-[11px] text-white">HTTP/SSE ready</span></p>
+          <p class="flex items-center gap-2">Waiting for Claude Desktop... <span class="animate-pulse">_</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem" class="py-24 px-gutter mx-auto max-w-6xl scroll-mt-24">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <button class="text-left p-12 border border-border-subtle bg-surface-container-lowest/30 backdrop-blur-md rounded-xl space-y-6 relative overflow-hidden group" type="button" data-card-toggle>
+          <div class="absolute inset-0 opacity-10 dot-matrix group-hover:opacity-20 transition-opacity"></div>
+          <span class="font-label-caps text-label-caps text-on-tertiary-container uppercase">The Problem</span>
+          <h2 class="font-headline-lg text-headline-lg text-high-contrast">Claude is smart. <br />But it's guessing.</h2>
+          <p class="text-soft-contrast">Standard LLMs lack real-time access to your local files, databases, and schedules. They hallucinate dead dates and missing notes because they're blind to your context.</p>
+          <p class="hidden text-soft-contrast" data-card-extra>ScholarSync replaces vague context with exact retrieval, deadlines, file metadata, and course data that Claude can call as tools.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 bg-error-container text-on-error-container text-[11px] font-code-sm">STALE DATA</span>
+            <span class="px-2 py-1 bg-error-container text-on-error-container text-[11px] font-code-sm">CONTEXT BLINDNESS</span>
+          </div>
+        </button>
+        <button class="text-left p-12 border border-white/20 bg-white/5 backdrop-blur-md rounded-xl space-y-6 relative overflow-hidden group" type="button" data-card-toggle>
+          <div class="absolute -right-12 -top-12 w-48 h-48 bg-iridescent-start/10 rounded-full blur-3xl"></div>
+          <span class="font-label-caps text-label-caps text-iridescent-start uppercase">The Solution</span>
+          <h2 class="font-headline-lg text-headline-lg text-high-contrast">ScholarSync gives <br />Claude real tools.</h2>
+          <p class="text-soft-contrast">By exposing a structured API via the MCP protocol, ScholarSync lets Claude perform semantic queries over your specific academic corpus in real-time.</p>
+          <p class="hidden text-soft-contrast" data-card-extra>Clicking these panels reveals extra detail without changing the layout: the card simply expands in place.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 bg-surface-variant text-white text-[11px] font-code-sm border border-outline-variant">VECTOR RAG</span>
+            <span class="px-2 py-1 bg-surface-variant text-white text-[11px] font-code-sm border border-outline-variant">LIVE DB SYNC</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section id="features" class="py-24 px-gutter mx-auto max-w-6xl scroll-mt-24">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[280px]">
+        <div class="md:col-span-8 bento-card border border-border-subtle bg-white/5 backdrop-blur-md p-8 flex flex-col justify-between group">
+          <div class="flex justify-between items-start">
+            <div class="space-y-4">
+              <span class="font-label-caps text-label-caps text-soft-contrast flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">neurology</span>RAG ENGINE</span>
+              <h3 class="font-headline-md text-headline-md text-high-contrast">Hybrid Semantic Search</h3>
+              <p class="text-soft-contrast max-w-md">Combine traditional keyword matching with state-of-the-art vector embeddings for 99.9% retrieval accuracy over lecture notes.</p>
+            </div>
+            <div class="dot-matrix w-20 h-20 opacity-30"></div>
+          </div>
+          <div class="flex gap-2">
+            <div class="h-1 flex-1 bg-surface-variant overflow-hidden"><div class="h-full w-2/3 bg-gradient-to-r from-iridescent-start to-iridescent-mid"></div></div>
+            <span class="font-status-dot text-status-dot text-high-contrast">0.98 SCORE</span>
+          </div>
+        </div>
+        <div class="md:col-span-4 bento-card border border-border-subtle bg-white/5 backdrop-blur-md p-8 flex flex-col justify-between relative overflow-hidden">
+          <div class="space-y-4 relative z-10">
+            <span class="font-label-caps text-label-caps text-soft-contrast flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>PARSING</span>
+            <h3 class="font-headline-md text-headline-md text-high-contrast">Smart PDF Engine</h3>
+            <p class="text-soft-contrast text-sm">Deep layout analysis for complex scientific charts and multi-column papers.</p>
+          </div>
+          <button class="w-full py-2 border border-outline-variant text-[12px] font-bold uppercase tracking-widest text-white hover:border-white transition-all relative z-10" type="button" data-toast="Parser initialized in preview mode.">Initialize Parser</button>
+        </div>
+        <div class="md:col-span-4 bento-card border border-border-subtle bg-white/5 backdrop-blur-md p-8 flex flex-col justify-between">
+          <div class="space-y-4">
+            <span class="font-label-caps text-label-caps text-soft-contrast flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">handyman</span>EXTENSIBILITY</span>
+            <h3 class="font-headline-md text-headline-md text-high-contrast">19 AI Tools</h3>
+            <p class="text-soft-contrast text-sm">From timetable management to automatic flashcard generation via Spaced Repetition.</p>
+          </div>
+          <div class="grid grid-cols-4 gap-2" data-tool-bars>
+            <div class="h-2 bg-white/20"></div><div class="h-2 bg-white/40"></div><div class="h-2 bg-white/10"></div><div class="h-2 bg-white/60"></div>
+            <div class="h-2 bg-white/30"></div><div class="h-2 bg-white/50"></div><div class="h-2 bg-white/20"></div><div class="h-2 bg-white/10"></div>
+          </div>
+        </div>
+        <div class="md:col-span-8 bento-card border border-border-subtle bg-white/5 backdrop-blur-md p-8 flex flex-col justify-center items-center text-center space-y-4">
+          <span class="material-symbols-outlined text-[48px] text-iridescent-mid">language</span>
+          <h3 class="font-headline-md text-headline-md text-high-contrast">Native Multilingual Support</h3>
+          <p class="text-soft-contrast max-w-lg">Process notes in 40+ languages with consistent embedding quality and semantic translation capabilities on the fly.</p>
+          <div class="flex gap-4" data-language-picker>
+            <button class="font-code-sm text-code-sm opacity-60 text-white" type="button">EN</button>
+            <button class="font-code-sm text-code-sm opacity-60 text-white" type="button">DE</button>
+            <button class="font-code-sm text-code-sm opacity-60 text-white" type="button">FR</button>
+            <button class="font-code-sm text-code-sm opacity-60 text-white" type="button">ES</button>
+            <button class="font-code-sm text-code-sm text-iridescent-start font-bold" type="button">ZH</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="py-24 px-gutter bg-white/5 backdrop-blur-md border-y border-border-subtle max-w-6xl scroll-mt-24">
+      <div class="max-w-container-max mx-auto space-y-16">
+        <div class="text-center space-y-4">
+          <span class="font-label-caps text-label-caps text-soft-contrast">INFRASTRUCTURE LAYER</span>
+          <h2 class="font-headline-lg text-headline-lg text-high-contrast">The Intelligence Loop</h2>
+        </div>
+        <div class="flex flex-col md:flex-row items-center justify-between gap-12 relative" data-loop>
+          <button class="loop-step" type="button" data-loop-detail="Input Query"><span class="material-symbols-outlined text-[32px] text-white">person</span><strong>User</strong><small>Input Query</small></button>
+          <div class="hidden md:block h-[1px] flex-1 bg-gradient-to-r from-border-subtle via-white/30 to-border-subtle"></div>
+          <button class="loop-step" type="button" data-loop-detail="Reasoning Engine"><span class="material-symbols-outlined text-[32px] text-white">smart_toy</span><strong>Claude</strong><small>Reasoning Engine</small></button>
+          <div class="hidden md:block h-[1px] flex-1 bg-gradient-to-r from-border-subtle via-white/30 to-border-subtle"></div>
+          <button class="loop-step scholar-step" type="button" data-loop-detail="MCP Protocol"><span>S</span><strong>ScholarSync</strong><small>MCP Protocol</small></button>
+          <div class="hidden md:block h-[1px] flex-1 bg-gradient-to-r from-border-subtle via-white/30 to-border-subtle"></div>
+          <button class="loop-step" type="button" data-loop-detail="Knowledge Base"><span class="material-symbols-outlined text-[32px] text-white">database</span><strong>MongoDB</strong><small>Knowledge Base</small></button>
+        </div>
+        <p class="text-center text-soft-contrast font-code-sm text-code-sm min-h-[20px]" data-loop-output>Click a node to trace the data flow.</p>
+      </div>
+    </section>
+
+    <section class="py-16 px-gutter border-b border-border-subtle bg-white/5 backdrop-blur-sm">
+      <div class="max-w-container-max mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="text-center space-y-2"><p class="font-headline-lg text-headline-lg text-high-contrast stat-counter" data-target="19">0</p><p class="font-label-caps text-label-caps text-soft-contrast tracking-widest">MCP TOOLS</p></div>
+        <div class="text-center space-y-2"><p class="font-headline-lg text-headline-lg text-high-contrast stat-counter" data-target="41">0</p><p class="font-label-caps text-label-caps text-soft-contrast tracking-widest">PYTEST TESTS</p></div>
+        <div class="text-center space-y-2"><p class="font-headline-lg text-headline-lg text-high-contrast stat-counter" data-target="6">0</p><p class="font-label-caps text-label-caps text-soft-contrast tracking-widest">MONGO COLLECTIONS</p></div>
+        <div class="text-center space-y-2"><p class="font-headline-lg text-headline-lg text-high-contrast stat-counter" data-target="2">0</p><p class="font-label-caps text-label-caps text-soft-contrast tracking-widest">SEARCH MODES</p></div>
+      </div>
+    </section>
+
+    <section class="py-12 px-gutter opacity-80 bg-black/40 backdrop-blur-sm">
+      <div class="max-w-container-max mx-auto flex flex-wrap justify-center items-center gap-12 grayscale brightness-150" data-tech-strip>
+        <span class="font-headline-md font-bold text-white">Python</span>
+        <span class="font-headline-md font-bold text-white">MongoDB Atlas</span>
+        <span class="font-headline-md font-bold text-white">Anthropic MCP</span>
+        <span class="font-headline-md font-bold text-white">OpenAI Ada</span>
+        <span class="font-headline-md font-bold text-white">Docker</span>
+      </div>
+    </section>
+
+    <section id="tools" class="py-24 px-gutter scroll-mt-24">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10">
+        <div>
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full border border-outline-variant bg-surface-container-lowest/70 w-fit mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-error status-blink"></span>
+            <span class="font-status-dot text-status-dot uppercase tracking-widest text-on-surface-variant">Live MCP Catalog</span>
+          </div>
+          <h2 class="font-headline-xl text-headline-xl leading-tight"><span class="text-on-surface">19 MCP </span><span class="text-transparent bg-clip-text bg-gradient-to-r from-iridescent-start via-iridescent-mid to-iridescent-end">Tools</span></h2>
+          <p class="font-body-lg text-body-lg text-soft-contrast max-w-xl mt-4">Claude calls these automatically. You just ask in plain English. ScholarSync handles the complex data orchestration in the background.</p>
+        </div>
+        <div class="flex flex-wrap gap-3" data-tool-filter>
+          <button class="filter-pill active" type="button" data-filter="all">All</button>
+          <button class="filter-pill" type="button" data-filter="rag">RAG</button>
+          <button class="filter-pill" type="button" data-filter="pdf">PDF</button>
+          <button class="filter-pill" type="button" data-filter="assignments">Assignments</button>
+          <button class="filter-pill" type="button" data-filter="study">Study</button>
+          <button class="filter-pill" type="button" data-filter="tasks">Tasks</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" data-tools-grid>
+        <article class="tool-card" data-category="rag"><header><code>ingest_academic_knowledge_base</code><span class="material-symbols-outlined">info</span></header><p>Hydrates your vector store with journals, papers, and lecture notes with automatic metadata extraction.</p><div><small>Example Prompt</small><code>"Add the three PDFs on Neural Networks from my downloads to my AI Ethics knowledge base."</code></div></article>
+        <article class="tool-card" data-category="rag"><header><code>semantic_search</code><span class="material-symbols-outlined">search</span></header><p>Executes deep context retrieval across all connected databases to find conceptual matches, not just keywords.</p><div><small>Example Prompt</small><code>"Find all references to 'backpropagation' in the papers I uploaded last week."</code></div></article>
+        <article class="tool-card" data-category="pdf"><header><code>summarize_pdf</code><span class="material-symbols-outlined">description</span></header><p>Extracts key arguments, methodologies, and findings into a structured markdown report from any scholarly PDF.</p><div><small>Example Prompt</small><code>"Give me a 3-bullet summary of the methodology section in this research paper."</code></div></article>
+        <article class="tool-card" data-category="assignments"><header><code>add_assignment</code><span class="material-symbols-outlined">add_task</span></header><p>Logs new coursework with deadline tracking and priority weighting for your academic schedule.</p><div><small>Example Prompt</small><code>"Add a new essay assignment for Psychology 101 due next Friday at 5 PM."</code></div></article>
+        <article class="tool-card" data-category="assignments"><header><code>search_assignments</code><span class="material-symbols-outlined">search</span></header><p>Filters assignments by status, course, or deadline proximity.</p><div><small>Example Prompt</small><code>"Show me all assignments due before the end of the month."</code></div></article>
+        <article class="tool-card" data-category="study"><header><code>generate_exam_questions</code><span class="material-symbols-outlined">quiz</span></header><p>Synthesizes practice questions based on the content found in your knowledge base papers.</p><div><small>Example Prompt</small><code>"Generate 5 challenging multiple-choice questions on cellular respiration."</code></div></article>
+        <article class="tool-card" data-category="study"><header><code>create_study_plan</code><span class="material-symbols-outlined">calendar_month</span></header><p>Optimizes your study sessions using spaced repetition logic based on your exam dates.</p><div><small>Example Prompt</small><code>"Make a 2-week study plan for my midterms, focusing on History and Bio."</code></div></article>
+        <article class="tool-card" data-category="tasks"><header><code>add_task</code><span class="material-symbols-outlined">task_alt</span></header><p>Quickly capture granular to-do items.</p><div><small>Example Prompt</small><code>"Remind me to buy notebook."</code></div></article>
+        <article class="tool-card" data-category="tasks"><header><code>get_schedule</code><span class="material-symbols-outlined">event</span></header><p>Aggregates classes and tasks into a daily view.</p><div><small>Example Prompt</small><code>"What does my Tuesday look like?"</code></div></article>
+        <article class="tool-card" data-category="tasks"><header><code>health_check</code><span class="material-symbols-outlined">monitor_heart</span></header><p>Analyzes your workload to prevent burnout.</p><div><small>Example Prompt</small><code>"Am I overbooked this week?"</code></div></article>
+      </div>
+      <div class="mt-8 flex justify-center">
+        <button class="border border-dashed border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:border-primary hover:text-primary transition-all rounded-lg px-8 py-3" type="button" data-open-custom-tool>+ Add Custom Tool</button>
+      </div>
+    </section>
+
+    <section id="quickstart" class="py-24 px-gutter scroll-mt-24">
+      <div class="mb-16">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-2 h-2 rounded-full bg-error status-blink"></div>
+          <span class="font-status-dot text-status-dot text-on-surface-variant">NODE_STATUS: READY_FOR_DEPLOYMENT</span>
+        </div>
+        <h2 class="font-headline-xl text-headline-xl mb-6">Get ScholarSync Running</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Three ways to connect. Pick yours. Our architecture is designed to scale with your research needs, whether local or cloud-native.</p>
+      </div>
+
+      <div class="mb-16 grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="requirement-card"><span class="material-symbols-outlined">terminal</span><h3>Python 3.10+</h3><p>Runtime env</p></div>
+        <div class="requirement-card"><span class="material-symbols-outlined">database</span><h3>MongoDB Atlas</h3><p>Vector storage</p></div>
+        <div class="requirement-card"><span class="material-symbols-outlined">smart_toy</span><h3>Claude Desktop</h3><p>Interface</p></div>
+        <div class="requirement-card"><span class="material-symbols-outlined">account_tree</span><h3>Git</h3><p>Version control</p></div>
+      </div>
+
+      <div class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="setup-card border-white/10">
+          <span class="font-label-caps text-label-caps text-iridescent-start mb-2 block">OPTION A</span>
+          <h3 class="font-headline-lg text-headline-lg">Docker Setup</h3>
+          <p class="text-on-surface-variant mt-2">Containerized environment for rapid deployment.</p>
+          <div class="space-y-4 font-code-sm text-code-sm mt-6">
+            <pre class="code-block"><button type="button" data-copy>Copy</button><code>git clone https://github.com/scholarsync/mcp-server.git</code></pre>
+            <pre class="code-block"><button type="button" data-copy>Copy</button><code>cp .env.example .env</code></pre>
+            <pre class="code-block"><button type="button" data-copy>Copy</button><code>docker-compose up -d</code></pre>
+          </div>
+          <div class="progress-line w-full mt-6"></div>
+        </div>
+        <div class="setup-card border-border-subtle">
+          <span class="font-label-caps text-label-caps text-iridescent-mid mb-2 block">OPTION B</span>
+          <h3 class="font-headline-lg text-headline-lg">Local Python</h3>
+          <p class="text-on-surface-variant mt-2">Direct execution on your host machine.</p>
+          <div class="space-y-4 font-code-sm text-code-sm mt-6">
+            <pre class="code-block"><button type="button" data-copy>Copy</button><code>pip install -r requirements.txt</code></pre>
+            <pre class="code-block"><button type="button" data-copy>Copy</button><code>export MONGO_URI="mongodb+srv://..."</code></pre>
+            <pre class="code-block"><button type="button" data-copy>Copy</button><code>python server.py</code></pre>
+          </div>
+          <button class="mt-6 border border-outline px-6 py-3 font-label-caps text-label-caps hover:bg-white hover:text-black transition-colors" type="button" data-toast="Docs download action connected.">Download Docs</button>
+        </div>
+        <div class="md:col-span-2 setup-card border-l-4 border-l-iridescent-end">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <div class="max-w-xl"><span class="font-label-caps text-label-caps text-iridescent-end mb-2 block">OPTION C</span><h3 class="font-headline-lg text-headline-lg">Remote HTTP/SSE</h3><p class="text-on-surface-variant mt-2">Connect via Secure Server Events. Ideal for distributed teams and centralized compute clusters.</p></div>
+            <div class="w-full md:w-auto"><pre class="code-block mb-4"><button type="button" data-copy>Copy</button><code>GET /connect?protocol=sse</code></pre><button class="w-full bg-white text-black px-8 py-3 font-label-caps text-label-caps hover:bg-opacity-80" type="button" data-toast="API reference panel will open once docs are linked.">View API Reference</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-16">
+        <h3 class="font-headline-lg text-headline-lg">Claude Desktop Configuration</h3>
+        <p class="text-on-surface-variant mb-8">Update your <code class="font-code-sm text-primary">claude_desktop_config.json</code> to enable ScholarSync tools.</p>
+        <div class="relative group">
+          <div class="absolute -inset-0.5 bg-gradient-to-r from-iridescent-start via-iridescent-mid to-iridescent-end rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+          <pre class="relative bg-black/60 backdrop-blur-md p-8 rounded-lg overflow-x-auto border border-white/5 font-code-sm text-code-sm leading-relaxed code-block"><button type="button" data-copy>Copy</button><code>{
+  "mcpServers": {
+    "scholarsync": {
+      "command": "python",
+      "args": ["/path/to/scholarsync/server.py"],
+      "env": {
+        "MONGODB_URI": "YOUR_CONNECTION_STRING",
+        "LOG_LEVEL": "DEBUG"
+      }
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="w-full py-12 border-t border-white/10 bg-black/60 backdrop-blur-lg">
+    <div class="flex flex-col md:flex-row justify-between items-center px-gutter mx-auto gap-6 max-w-6xl">
+      <div class="flex items-center gap-4">
+        <span class="font-headline-sm text-high-contrast">ScholarSync</span>
+        <span class="font-status-dot text-status-dot text-soft-contrast">ScholarSync © 2024 • Build v0.4.2</span>
+      </div>
+      <div class="flex flex-wrap justify-center gap-8">
+        <a class="font-status-dot text-status-dot text-soft-contrast hover:text-iridescent-start transition-colors" href="#quickstart">Documentation</a>
+        <button class="font-status-dot text-status-dot text-soft-contrast hover:text-iridescent-start transition-colors" type="button" data-toast="GitHub link ready to connect once your repository URL is final.">GitHub</button>
+        <button class="font-status-dot text-status-dot text-soft-contrast hover:text-iridescent-start transition-colors" type="button" data-open-terminal>System Status</button>
+        <button class="font-status-dot text-status-dot text-soft-contrast hover:text-iridescent-start transition-colors" type="button" data-toast="Privacy page placeholder connected.">Privacy</button>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="hidden lg:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-16 flex-col items-center py-8 gap-8 border-r border-white/10 bg-black/40 backdrop-blur-md z-40" data-side-nav>
+    <button class="side-button" type="button" data-scroll-target="features" aria-label="Features"><span class="material-symbols-outlined">neurology</span></button>
+    <button class="side-button" type="button" data-scroll-target="tools" aria-label="PDF tools"><span class="material-symbols-outlined">picture_as_pdf</span></button>
+    <button class="side-button" type="button" data-scroll-target="tools" aria-label="Assignments"><span class="material-symbols-outlined">assignment</span></button>
+    <button class="side-button" type="button" data-scroll-target="quickstart" aria-label="Study planners"><span class="material-symbols-outlined">menu_book</span></button>
+    <button class="side-button" type="button" data-open-terminal aria-label="System status"><span class="material-symbols-outlined">task_alt</span></button>
+  </aside>
+
+  <dialog class="app-dialog" data-terminal-dialog>
+    <form method="dialog">
+      <div class="dialog-shell">
+        <header><span>scholarsync_server — status</span><button aria-label="Close terminal status"><span class="material-symbols-outlined">close</span></button></header>
+        <div class="font-code-sm text-code-sm space-y-2">
+          <p class="text-iridescent-start">$ scholarsync-mcp status --verbose</p>
+          <p>MongoDB: connected</p>
+          <p>Registered tools: 19</p>
+          <p>Transport: stdio + HTTP/SSE ready</p>
+          <p>Last health check: clean</p>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="app-dialog" data-deploy-dialog>
+    <form method="dialog">
+      <div class="dialog-shell">
+        <header><span>Deploy ScholarSync</span><button aria-label="Close deploy panel"><span class="material-symbols-outlined">close</span></button></header>
+        <div class="space-y-4">
+          <button class="deploy-option" type="button" data-toast="Docker deployment selected.">Docker Setup</button>
+          <button class="deploy-option" type="button" data-toast="Local Python setup selected.">Local Python</button>
+          <button class="deploy-option" type="button" data-toast="Remote HTTP/SSE setup selected.">Remote HTTP/SSE</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="app-dialog" data-custom-tool-dialog>
+    <form method="dialog">
+      <div class="dialog-shell">
+        <header><span>Add Custom Tool</span><button aria-label="Close custom tool panel"><span class="material-symbols-outlined">close</span></button></header>
+        <label class="block text-soft-contrast text-sm mb-2" for="tool-name">Tool name</label>
+        <input class="w-full bg-black/60 border border-white/10 rounded-lg text-white mb-4" id="tool-name" placeholder="sync_course_notes" />
+        <button class="w-full bg-white text-black px-6 py-3 font-label-caps text-label-caps rounded-lg" type="button" data-save-custom-tool>Save Tool</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" data-toast-region role="status" aria-live="polite"></div>
+  <script src="assets/app.js"></script>
+</body>
+</html>
